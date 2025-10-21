@@ -8,20 +8,20 @@ import numpy as np
 from scipy.spatial.distance import cosine
 
 
-
-def get_imgs(paths):
+def get_imgs(base_folder):
     imgs = {}
-    for path in paths:
-
-        imgs[path] = list(map(lambda p:f"./faces/{path}/{p}",os.listdir(f"./faces/{path}")))
+    people_folders = [p for p in os.listdir(base_folder) if not p.startswith(".")]
+    for person in people_folders:
+        person_path = os.path.join(base_folder, person)
+        imgs[person] = [os.path.join(person_path, f) for f in os.listdir(person_path)]
     return imgs
 
 
-
-train_seq = TripletSequence(get_imgs([p for p in os.listdir("./faces") if not p.startswith(".") ]), batch_size=16)
-triplet_model.fit(train_seq, epochs=40, steps_per_epoch=40)
+train_seq = TripletSequence(get_imgs("./faces"), p_val=8, k_val=4,
+                            embedding_model=embedding_model)
+triplet_model.fit(train_seq, epochs=20)
 
 print("Training completed")
-embedding_model.save("face_embeddings.keras")
+embedding_model.save("./models/face_embeddings.keras")
 triplet_model.save("triplet_model.keras")
 print("Model saved")
