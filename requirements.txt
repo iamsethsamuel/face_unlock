@@ -1,0 +1,7 @@
+tensorflow
+keras
+keras_vggface
+Pillow
+numpy
+scipy
+opencv-python
