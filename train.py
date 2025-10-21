@@ -19,7 +19,7 @@ def get_imgs(base_folder):
 
 train_seq = TripletSequence(get_imgs("./faces"), p_val=8, k_val=4,
                             embedding_model=embedding_model)
-triplet_model.fit(train_seq, epochs=20)
+triplet_model.fit(train_seq, epochs=40)
 
 print("Training completed")
 embedding_model.save("./models/face_embeddings.keras")
