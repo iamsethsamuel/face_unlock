@@ -8,6 +8,8 @@ from tensorflow import keras
 from triplet_loss import triplet_loss
 
 from img_extractor import generate_images_from_video
+from utils import dataset_path
+
 
 
 # generate_images_from_video("../Downloads/IMG_3211.MOV", num_frames=100)
@@ -15,7 +17,7 @@ from img_extractor import generate_images_from_video
 
 keras.config.enable_unsafe_deserialization()
 
-model = keras.models.load_model("./face_embeddings.keras",
+model = keras.models.load_model("./models/face_embeddings.keras",
                                 compile=False,
                                 # custom_objects={"=keras_tensor_500": l2_normalize},
                                 )
@@ -42,8 +44,9 @@ def enroll_face(list_of_bgr_images):
     center /= np.linalg.norm(center)
     return center
 
-user_embs = enroll_face([f"./train/user/{face}" for face in os.listdir("./train/user") if not face.startswith(".")])
-print(user_embs)
+# change it to a folder where your pictures are located
+user_face = [f"./train/user/{face}" for face in os.listdir("./train/user") if not face.startswith(".")]
+user_embs = enroll_face(user_face)
 
 def verify(face_bgr, db, threshold=0.7):
     embs = get_embeddings(face_bgr)
@@ -61,12 +64,11 @@ def verify(face_bgr, db, threshold=0.7):
 
 print("Verifying face")
 print(
-    verify("./train/user/frame_31.jpg", {"seth": user_embs}, 0.7)
+    verify("./train/user/frame_31.jpg", {"user": user_embs}, 0.5),
 )
 
 print("Wrong Face")
-
 print(
-    verify("./faces/Tom Cruise/Tom Cruise_4.jpg", {"seth": user_embs}, 0.7)
+    verify(f"{dataset_path}/Brad Pitt/001_c04300ef.jpg", {"user": user_embs}, 0.5),
 )
 

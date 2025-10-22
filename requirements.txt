@@ -5,3 +5,4 @@ Pillow
 numpy
 scipy
 opencv-python
+kagglehub

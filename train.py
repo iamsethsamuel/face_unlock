@@ -1,11 +1,8 @@
 import os
 from data_pipeline import TripletSequence
-from triplet_loss import triplet_model, triplet_loss
+from triplet_loss import triplet_model
 from embedding_model import embedding_model
-import cv2
-import tensorflow as tf
-import numpy as np
-from scipy.spatial.distance import cosine
+from utils import dataset_path
 
 
 def get_imgs(base_folder):
@@ -17,7 +14,7 @@ def get_imgs(base_folder):
     return imgs
 
 
-train_seq = TripletSequence(get_imgs("./faces"), p_val=8, k_val=4,
+train_seq = TripletSequence(get_imgs(dataset_path), p_val=8, k_val=4,
                             embedding_model=embedding_model)
 triplet_model.fit(train_seq, epochs=40)
 
