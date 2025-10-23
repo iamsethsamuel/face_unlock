@@ -10,9 +10,11 @@ input_signature = [tf.TensorSpec(input_shape, tf.float32)]
 
 @tf.function(input_signature=input_signature)
 def model_func(inputs):
-    return model(inputs)
+    return model(inputs, training=False)
 
-converter = tf.lite.TFLiteConverter.from_concrete_functions([model_func.get_concrete_function()])
+concrete_func = model_func.get_concrete_function()
+
+converter = tf.lite.TFLiteConverter.from_concrete_functions([concrete_func], trackable_obj=model_func)
 tflite_model = converter.convert()
 
 with open('./models/face_embeddings.tflite', 'wb') as f:
